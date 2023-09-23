@@ -1,7 +1,8 @@
-const { genToken } = require("../config/jwtToken.js");
+const { generateToken } = require("../config/jwtToken.js");
 const User = require("../models/userModel.js");
 const asyncHandler = require("express-async-handler");
 const validateMongodbId = require("../utils/validateMongodbId.js");
+const { generateRefreshToken } = require("../config/refreshToken.js");
 
 // user register controller
 const createUser = asyncHandler(async (req, res) => {
@@ -13,7 +14,6 @@ const createUser = asyncHandler(async (req, res) => {
 		const newUser = await User.create(req.body);
 		res.json(newUser);
 	} else {
-		// user already exists
 		throw new Error("User Already Exists");
 	}
 });
@@ -25,13 +25,32 @@ const loginUserController = asyncHandler(async (req, res) => {
 	// check if user exists or not
 	const findUser = await User.findOne({ email });
 	if (findUser && (await findUser.isPasswordMatch(password))) {
+		// generate refresh token
+		const refreshToken = await generateRefreshToken(findUser?._id);
+
+		// update user token
+		const updateUserToken = await User.findByIdAndUpdate(
+			findUser?.id,
+			{ refreshToken },
+			{ new: true }
+		);
+
+		// max age of cookie is set to 24 hours in milliseconds
+		const maxAgeOfCookie = 1000 * 60 * 60 * 72;
+
+		// store in cookie
+		res.cookie("refreshToken", refreshToken, {
+			httpOnly: true,
+			maxAge: maxAgeOfCookie,
+		});
+
 		res.json({
 			_id: findUser?._id,
 			firstName: findUser?.firstName,
 			lastName: findUser?.lastName,
 			email: findUser?.email,
 			mobile: findUser?.mobile,
-			token: genToken(findUser?._id),
+			token: generateToken(findUser?._id),
 		});
 	} else {
 		throw new Error("Invalid credentials");
@@ -49,7 +68,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 });
 
 // Get a single user controller
-const getAUser = asyncHandler(async (req, res) => {
+const getASingleUser = asyncHandler(async (req, res) => {
 	const id = req.params.id;
 	validateMongodbId(id);
 	try {
@@ -129,7 +148,7 @@ module.exports = {
 	createUser,
 	loginUserController,
 	getAllUsers,
-	getAUser,
+	getASingleUser,
 	updateUser,
 	deleteUser,
 	blockUser,

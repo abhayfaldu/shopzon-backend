@@ -3,7 +3,7 @@ const {
 	createUser,
 	loginUserController,
 	getAllUsers,
-	getAUser,
+	getASingleUser,
 	updateUser,
 	deleteUser,
 	blockUser,
@@ -16,7 +16,7 @@ const router = express.Router();
 router.post("/register", createUser);
 router.post("/login", loginUserController);
 router.get("/all-users", getAllUsers);
-router.get("/:id", authMiddleware, isAdmin, getAUser);
+router.get("/:id", authMiddleware, isAdmin, getASingleUser);
 router.delete("/:id", deleteUser);
 router.put("/edit-user", authMiddleware, updateUser);
 router.put("/block-user/:id", authMiddleware, isAdmin, blockUser);

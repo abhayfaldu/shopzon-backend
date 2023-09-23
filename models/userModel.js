@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema(
 		cart: { type: Array, default: [] },
 		address: [{ type: mongoose.Schema.Types.ObjectId, ref: "Address" }],
 		wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+		refreshToken: { type: String },
 	},
 	{ timestamps: true },
 	{ versionKey: false }
