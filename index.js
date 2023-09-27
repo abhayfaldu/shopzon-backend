@@ -6,11 +6,13 @@ const bodyParser = require("body-parser");
 const { notFound, errorHandler } = require("./middlewares/errorHandler.js");
 const cookieParser = require("cookie-parser");
 const productRouter = require("./routes/productRoute.js");
+const morgan = require("morgan");
 
 const app = express();
 
 dbConnect();
 
+app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
