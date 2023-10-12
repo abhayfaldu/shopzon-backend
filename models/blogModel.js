@@ -15,7 +15,7 @@ var blogSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-		numOfVies: {
+		numOfViews: {
 			type: Number,
 			default: 0,
 		},
@@ -28,6 +28,12 @@ var blogSchema = new mongoose.Schema(
 			default: false,
 		},
 		likes: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "User",
+			},
+		],
+		dislikes: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
 				ref: "User",
