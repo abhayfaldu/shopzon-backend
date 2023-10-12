@@ -6,11 +6,13 @@ const {
 	getASingleBlog,
 	getAllBlogs,
 	deleteBlog,
+	likeBlog,
 } = require("../controllers/blogController");
 
 const router = express.Router();
 
 router.post("/", authMiddleware, isAdmin, createBlog);
+router.put("/likes", authMiddleware, likeBlog);
 router.put("/:id", authMiddleware, isAdmin, updateBlog);
 router.get("/:id", getASingleBlog);
 router.get("/", getAllBlogs);
