@@ -7,6 +7,7 @@ const { notFound, errorHandler } = require("./middlewares/errorHandler.js");
 const cookieParser = require("cookie-parser");
 const productRouter = require("./routes/productRoute.js");
 const blogRouter = require("./routes/blogRoute.js");
+const categoryRouter = require("./routes/productCategoryRoute.js");
 const morgan = require("morgan");
 
 const app = express();
@@ -21,6 +22,7 @@ app.use(cookieParser());
 app.use("/api/user", authRoute);
 app.use("/api/product", productRouter);
 app.use("/api/blog", blogRouter);
+app.use("/api/category", categoryRouter);
 
 app.use(notFound);
 app.use(errorHandler);
