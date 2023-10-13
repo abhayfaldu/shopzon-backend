@@ -46,7 +46,7 @@ userSchema.methods.createPasswordResetToken = async function () {
 };
 
 // Declare the model
-const userModel = mongoose.model("user", userSchema);
+const userModel = mongoose.model("User", userSchema);
 
 // Export the modal
 module.exports = userModel;
