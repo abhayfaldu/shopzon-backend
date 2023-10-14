@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-var productCategorySchema = new mongoose.Schema(
+var CategorySchema = new mongoose.Schema(
 	{
 		title: {
 			type: String,
@@ -14,10 +14,7 @@ var productCategorySchema = new mongoose.Schema(
 	}
 );
 
-const productCategoryModel = mongoose.model(
-	"ProductCategory",
-	productCategorySchema
-);
+const Category = mongoose.model("ProductCategory", CategorySchema);
 
 //Export the model
-module.exports = productCategoryModel;
+module.exports = Category;
