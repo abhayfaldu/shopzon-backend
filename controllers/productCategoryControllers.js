@@ -52,9 +52,22 @@ const deleteCategory = asyncHandler(async (req, res) => {
 	}
 });
 
+// get a single category
+const getASingleCategory = asyncHandler(async (req, res) => {
+	const { id } = req.params;
+	validateMongodbId(id);
+	try {
+		const category = await ProductCategory.findById(id);
+		res.json(category);
+	} catch (error) {
+		throw new Error(error);
+	}
+});
+
 module.exports = {
 	getAllCategories,
 	createCategory,
 	updateCategory,
 	deleteCategory,
+	getASingleCategory,
 };
