@@ -9,6 +9,7 @@ const productRouter = require("./routes/productRoute.js");
 const blogRouter = require("./routes/blogRoute.js");
 const productCategoryRouter = require("./routes/productCategoryRoute.js");
 const blogCategoryRouter = require("./routes/blogCategoryRoute.js");
+const brandRouter = require("./routes/brandRoute.js");
 const morgan = require("morgan");
 
 const app = express();
@@ -25,6 +26,7 @@ app.use("/api/product", productRouter);
 app.use("/api/blog", blogRouter);
 app.use("/api/product-category", productCategoryRouter);
 app.use("/api/blog-category", blogCategoryRouter);
+app.use("/api/brand", brandRouter);
 
 app.use(notFound);
 app.use(errorHandler);
