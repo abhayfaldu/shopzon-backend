@@ -148,7 +148,7 @@ const rating = asyncHandler(async (req, res) => {
 		);
 
 		if (alreadyRated) {
-			const updateRating = await Product.updateOne(
+			await Product.updateOne(
 				{
 					ratings: { $elemMatch: alreadyRated },
 				},
@@ -157,15 +157,29 @@ const rating = asyncHandler(async (req, res) => {
 				},
 				{ new: true }
 			);
-			res.json(updateRating);
 		} else {
-			const rateProduct = await Product.findByIdAndUpdate(
+			await Product.findByIdAndUpdate(
 				productId,
 				{ $push: { ratings: { star: star, postedBy: _id } } },
 				{ new: true }
 			);
-			res.json(rateProduct);
 		}
+
+		// average rating
+		let totalNumberOfRatings = product.ratings.length;
+
+		let sumOfNumberOfStars = product.ratings
+			.map((rating) => rating.star)
+			.reduce((prev, curr) => prev + curr, 0);
+
+		let averageRating = Math.round(sumOfNumberOfStars / totalNumberOfRatings);
+
+		let updatedRating = await Product.findByIdAndUpdate(
+			productId,
+			{ averageRating: averageRating },
+			{ new: true }
+		);
+		res.json(updatedRating);
 	} catch (error) {
 		throw new Error(error);
 	}
