@@ -60,6 +60,48 @@ const loginUserController = asyncHandler(async (req, res) => {
 	}
 });
 
+// admin login
+const adminLogin = asyncHandler(async (req, res) => {
+	const { email, password } = req.body;
+
+	// check if admin exists or not
+	const findAdmin = await User.findOne({ email });
+
+	if (findAdmin.role !== "admin") throw new Error("Not Authorized");
+
+	if (findAdmin && (await findAdmin.isPasswordMatch(password))) {
+		// generate refresh token
+		const refreshToken = await generateRefreshToken(findAdmin?._id);
+
+		// update admin token
+		const updateAdminToken = await User.findByIdAndUpdate(
+			findAdmin?.id,
+			{ refreshToken },
+			{ new: true }
+		);
+
+		// max age of cookie is set to 24 hours in milliseconds
+		const maxAgeOfCookie = 1000 * 60 * 60 * 72;
+
+		// store in cookie
+		res.cookie("refreshToken", refreshToken, {
+			httpOnly: true,
+			maxAge: maxAgeOfCookie,
+		});
+
+		res.json({
+			_id: findAdmin?._id,
+			firstName: findAdmin?.firstName,
+			lastName: findAdmin?.lastName,
+			email: findAdmin?.email,
+			mobile: findAdmin?.mobile,
+			token: generateToken(findAdmin?._id),
+		});
+	} else {
+		throw new Error("Invalid credentials");
+	}
+});
+
 // Get all users controller
 const getAllUsers = asyncHandler(async (req, res) => {
 	try {
@@ -266,4 +308,5 @@ module.exports = {
 	updatePassword,
 	forgotPasswordToken,
 	resetPassword,
+	adminLogin,
 };
