@@ -16,6 +16,12 @@ const {
 } = require("../middlewares/uploadImages");
 const router = express.Router();
 
+router.get("/", getAllProducts);
+router.get("/:id", getASingleProduct);
+
+router.put("/rating", authMiddleware, rating);
+router.put("/wishlist", authMiddleware, addToWishlist);
+
 router.post("/", authMiddleware, isAdmin, createProduct);
 router.put(
 	"/upload/:id",
@@ -25,10 +31,6 @@ router.put(
 	productImgResize,
 	uploadImages
 );
-router.get("/:id", getASingleProduct);
-router.put("/wishlist", authMiddleware, addToWishlist);
-router.put("/rating", authMiddleware, rating);
-router.get("/", getAllProducts);
 router.put("/:id", authMiddleware, isAdmin, updateProduct);
 router.delete("/:id", authMiddleware, isAdmin, deleteProduct);
 

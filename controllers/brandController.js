@@ -26,6 +26,7 @@ const createBrand = asyncHandler(async (req, res) => {
 const updateBrand = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 	validateMongodbId(id);
+
 	try {
 		const updatedBrand = await Brand.findByIdAndUpdate(id, req.body, {
 			new: true,
@@ -40,6 +41,7 @@ const updateBrand = asyncHandler(async (req, res) => {
 const deleteBrand = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 	validateMongodbId(id);
+
 	try {
 		const deletedBrand = await Brand.findByIdAndDelete(id);
 		res.json(deletedBrand);
@@ -52,6 +54,7 @@ const deleteBrand = asyncHandler(async (req, res) => {
 const getASingleBrand = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 	validateMongodbId(id);
+
 	try {
 		const brand = await Brand.findById(id);
 		res.json(brand);

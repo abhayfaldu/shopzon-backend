@@ -26,6 +26,7 @@ const createCategory = asyncHandler(async (req, res) => {
 const updateCategory = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 	validateMongodbId(id);
+	
 	try {
 		const updatedCategory = await Category.findByIdAndUpdate(id, req.body, {
 			new: true,
@@ -40,6 +41,7 @@ const updateCategory = asyncHandler(async (req, res) => {
 const deleteCategory = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 	validateMongodbId(id);
+	
 	try {
 		const deletedCategory = await Category.findByIdAndDelete(id);
 		res.json(deletedCategory);
@@ -52,6 +54,7 @@ const deleteCategory = asyncHandler(async (req, res) => {
 const getASingleCategory = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 	validateMongodbId(id);
+
 	try {
 		const category = await Category.findById(id);
 		res.json(category);

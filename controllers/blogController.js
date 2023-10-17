@@ -17,6 +17,8 @@ const createBlog = asyncHandler(async (req, res) => {
 // update blog
 const updateBlog = asyncHandler(async (req, res) => {
 	const { id } = req.params;
+	validateMongodbId(_id)
+
 	try {
 		const updateBlog = await Blog.findByIdAndUpdate(id, req.body, {
 			new: true,
@@ -31,6 +33,7 @@ const updateBlog = asyncHandler(async (req, res) => {
 const getASingleBlog = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 	validateMongodbId(id);
+
 	try {
 		const getASingleBlog = await Blog.findById(id).populate("likes");
 		await Blog.findByIdAndUpdate(
@@ -58,6 +61,7 @@ const getAllBlogs = asyncHandler(async (req, res) => {
 const deleteBlog = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 	validateMongodbId(id);
+	
 	try {
 		const deletedBlog = await Blog.findById(id);
 		await Blog.findByIdAndDelete(id);

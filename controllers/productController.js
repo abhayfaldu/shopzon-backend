@@ -5,6 +5,7 @@ const slugify = require("slugify");
 const validateMongoDbId = require("../utils/validateMongodbId");
 const cloudinaryUploadImg = require("../utils/cloudinary");
 const fs = require("fs");
+const validateMongodbId = require("../utils/validateMongodbId");
 
 const createProduct = asyncHandler(async (req, res) => {
 	try {
@@ -69,6 +70,8 @@ const getAllProducts = asyncHandler(async (req, res) => {
 // get a single product
 const getASingleProduct = asyncHandler(async (req, res) => {
 	const { id } = req.params;
+	validateMongodbId(id)
+
 	try {
 		const findProduct = await Product.findById(id);
 		res.json(findProduct);
@@ -80,6 +83,8 @@ const getASingleProduct = asyncHandler(async (req, res) => {
 // update product
 const updateProduct = asyncHandler(async (req, res) => {
 	const { id } = req.params;
+	validateMongodbId(id)
+
 	console.log(req.body);
 	try {
 		if (req.body.title) {
@@ -97,6 +102,8 @@ const updateProduct = asyncHandler(async (req, res) => {
 // delete product
 const deleteProduct = asyncHandler(async (req, res) => {
 	const { id } = req.params;
+	validateMongodbId(id)
+
 	try {
 		const deleteProduct = await Product.findByIdAndDelete(id);
 		res.json(deleteProduct);
@@ -108,6 +115,8 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // add to wishlist
 const addToWishlist = asyncHandler(async (req, res) => {
 	const { _id } = req.user;
+	validateMongodbId(_id)
+
 	const { productId } = req.body;
 
 	try {
@@ -142,6 +151,8 @@ const addToWishlist = asyncHandler(async (req, res) => {
 // ratings
 const rating = asyncHandler(async (req, res) => {
 	const { _id } = req.user;
+	validateMongodbId(_id)
+
 	const { star, comment, productId } = req.body;
 
 	try {

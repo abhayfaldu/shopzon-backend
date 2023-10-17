@@ -14,6 +14,12 @@ const { uploadImage, blogImgResize } = require("../middlewares/uploadImages");
 
 const router = express.Router();
 
+router.get("/:id", getASingleBlog);
+router.get("/", getAllBlogs);
+
+router.put("/likes", authMiddleware, likeBlog);
+router.put("/dislikes", authMiddleware, dislikeBlog);
+
 router.post("/", authMiddleware, isAdmin, createBlog);
 router.put(
 	"/upload/:id",
@@ -23,11 +29,7 @@ router.put(
 	blogImgResize,
 	uploadImages
 );
-router.put("/likes", authMiddleware, likeBlog);
-router.put("/dislikes", authMiddleware, dislikeBlog);
 router.put("/:id", authMiddleware, isAdmin, updateBlog);
-router.get("/:id", getASingleBlog);
-router.get("/", getAllBlogs);
 router.delete("/:id", authMiddleware, isAdmin, deleteBlog);
 
 module.exports = router;

@@ -116,6 +116,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 const getASingleUser = asyncHandler(async (req, res) => {
 	const id = req.params.id;
 	validateMongodbId(id);
+
 	try {
 		const user = await User.findById(id);
 		res.json(user);
@@ -128,6 +129,7 @@ const getASingleUser = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
 	const { _id } = req.user;
 	validateMongodbId(_id);
+
 	try {
 		const newUserDetails = {
 			firstName: req?.body?.firstName,
@@ -149,6 +151,7 @@ const updateUser = asyncHandler(async (req, res) => {
 const deleteUser = asyncHandler(async (req, res) => {
 	const id = req.params.id;
 	validateMongodbId(id);
+
 	try {
 		const deletedUser = await User.findByIdAndDelete(id);
 		res.json(deletedUser);
@@ -161,6 +164,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 const blockUser = asyncHandler(async (req, res, next) => {
 	const { id } = req.params;
 	validateMongodbId(id);
+
 	try {
 		const block = await User.findByIdAndUpdate(
 			id,
@@ -177,6 +181,7 @@ const blockUser = asyncHandler(async (req, res, next) => {
 const unblockUser = asyncHandler(async (req, res, next) => {
 	const { id } = req.params;
 	validateMongodbId(id);
+
 	try {
 		const unblock = await User.findByIdAndUpdate(
 			id,
@@ -235,8 +240,9 @@ const logout = asyncHandler(async (req, res) => {
 // update password
 const updatePassword = asyncHandler(async (req, res) => {
 	const { _id } = req.user;
-	const { password } = req.body;
 	validateMongodbId(_id);
+
+	const { password } = req.body;
 
 	const user = await User.findById(_id);
 	if (password) {
@@ -297,9 +303,28 @@ const resetPassword = asyncHandler(async (req, res) => {
 // get wishlist
 const getWishlist = asyncHandler(async (req, res) => {
 	const { _id } = req.user;
+	validateMongodbId(_id);
+
 	try {
 		const user = await User.findById(_id).populate("wishlist");
 		res.json(user);
+	} catch (error) {
+		throw new Error(error);
+	}
+});
+
+// save user address
+const saveAddress = asyncHandler(async (req, res) => {
+	const { _id } = req.user;
+	validateMongodbId(_id);
+
+	try {
+		const updatedUser = await User.findByIdAndUpdate(
+			_id,
+			{ address: req?.body?.address },
+			{ new: true }
+		);
+		res.json(updatedUser);
 	} catch (error) {
 		throw new Error(error);
 	}
@@ -321,4 +346,5 @@ module.exports = {
 	resetPassword,
 	adminLogin,
 	getWishlist,
+	saveAddress,
 };
