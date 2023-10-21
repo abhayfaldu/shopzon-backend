@@ -18,11 +18,13 @@ const {
 	saveAddress,
 	userCart,
 	getUserCart,
+	emptyCart,
 } = require("../controllers/userController.js");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware.js");
 
 const router = express.Router();
 
+router.delete("/empty-cart", authMiddleware, emptyCart);
 router.post("/register", createUser);
 router.post("/forgot-password-token", forgotPasswordToken);
 router.put("/reset-password/:token", resetPassword);
@@ -37,7 +39,7 @@ router.put("/update-password", authMiddleware, updatePassword);
 router.put("/edit-user", authMiddleware, updateUser);
 router.get("/wishlist", authMiddleware, getWishlist);
 router.put("/save-address", authMiddleware, saveAddress);
-router.post("/cart", authMiddleware, userCart);
+router.post("/add-to-cart", authMiddleware, userCart);
 router.get("/cart", authMiddleware, getUserCart);
 
 router.get("/:id", authMiddleware, isAdmin, getASingleUser);
