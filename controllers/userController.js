@@ -1,5 +1,7 @@
 const { generateToken } = require("../config/jwtToken.js");
 const User = require("../models/userModel.js");
+const Product = require("../models/productModel.js");
+const Cart = require("../models/cartModel.js");
 const asyncHandler = require("express-async-handler");
 const validateMongodbId = require("../utils/validateMongodbId.js");
 const { generateRefreshToken } = require("../config/refreshToken.js");
@@ -330,6 +332,58 @@ const saveAddress = asyncHandler(async (req, res) => {
 	}
 });
 
+// user cart feature
+const userCart = asyncHandler(async (req, res) => {
+	const { _id } = req.user;
+	validateMongodbId(_id);
+
+	const { cart } = req.body;
+
+	try {
+		let products = [];
+		const user = await User.findById(_id);
+
+		// check if user already have products in cart
+		const productAlreadyExistsInCart = await Cart.findOne({
+			orderedBy: user._id,
+		});
+
+		if (productAlreadyExistsInCart) {
+			productAlreadyExistsInCart.remove();
+		}
+
+		for (let i = 0; i < cart.length; i++) {
+			const getPrice = await Product.findById(cart[i]._id)
+				.select("price")
+				.exec();
+
+			const newProductToAdd = {
+				product: cart[i]._id,
+				count: cart[i].count,
+				color: cart[i].color,
+				price: getPrice.price,
+			};
+
+			products.push(newProductToAdd);
+		}
+
+		const cartTotal = products.reduce(
+			(prev, curr) => prev + curr.price * curr.count,
+			0
+		);
+
+		const newCart = await Cart({
+			products,
+			cartTotal,
+			orderedBy: user?._id,
+		});
+
+		res.send(newCart);
+	} catch (error) {
+		throw new Error(error);
+	}
+});
+
 module.exports = {
 	createUser,
 	loginUserController,
@@ -347,4 +401,5 @@ module.exports = {
 	adminLogin,
 	getWishlist,
 	saveAddress,
+	userCart,
 };
