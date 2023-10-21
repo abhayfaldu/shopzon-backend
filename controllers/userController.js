@@ -372,13 +372,28 @@ const userCart = asyncHandler(async (req, res) => {
 			0
 		);
 
-		const newCart = await Cart({
+		const newCart = await new Cart({
 			products,
 			cartTotal,
 			orderedBy: user?._id,
-		});
+		}).save();
 
 		res.send(newCart);
+	} catch (error) {
+		throw new Error(error);
+	}
+});
+
+// get user cart
+const getUserCart = asyncHandler(async (req, res) => {
+	const { _id } = req.user;
+	validateMongodbId(_id);
+
+	try {
+		const cart = await Cart.findOne({ orderedBy: _id }).populate(
+			"products.product"
+		);
+		res.json(cart);
 	} catch (error) {
 		throw new Error(error);
 	}
@@ -402,4 +417,5 @@ module.exports = {
 	getWishlist,
 	saveAddress,
 	userCart,
+	getUserCart,
 };
