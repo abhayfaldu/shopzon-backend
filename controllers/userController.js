@@ -1,4 +1,5 @@
 const { generateToken } = require("../config/jwtToken.js");
+const Coupon = require("../models/couponModel.js");
 const User = require("../models/userModel.js");
 const Product = require("../models/productModel.js");
 const Cart = require("../models/cartModel.js");
@@ -403,7 +404,6 @@ const getUserCart = asyncHandler(async (req, res) => {
 // empty cart
 const emptyCart = asyncHandler(async (req, res) => {
 	const { _id } = req.user;
-	console.log("first");
 	validateMongodbId(_id);
 
 	try {
@@ -413,6 +413,29 @@ const emptyCart = asyncHandler(async (req, res) => {
 	} catch (error) {
 		throw new Error(error);
 	}
+});
+
+// apply coupon
+const applyCoupon = asyncHandler(async (req, res) => {
+	const { coupon } = req.body;
+	const validCoupon = await Coupon.findOne({ name: coupon });
+	if (validCoupon === null) {
+		throw new Error("Invalid Coupon");
+	}
+
+	const { _id } = req.user;
+	validateMongodbId(_id);
+	const user = await User.findById(_id);
+	const { cartTotal } = await Cart.findOne({ orderedBy: user._id });
+	const totalAfterDiscount =
+		cartTotal - ((cartTotal * validCoupon.discount) / 100).toFixed(2);
+
+	await Cart.findOneAndUpdate(
+		{ orderedBy: user._id },
+		{ totalAfterDiscount },
+		{ new: true }
+	);
+	res.json(totalAfterDiscount);
 });
 
 module.exports = {
@@ -435,4 +458,5 @@ module.exports = {
 	userCart,
 	getUserCart,
 	emptyCart,
+	applyCoupon,
 };

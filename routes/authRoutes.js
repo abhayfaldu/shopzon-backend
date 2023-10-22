@@ -19,6 +19,7 @@ const {
 	userCart,
 	getUserCart,
 	emptyCart,
+	applyCoupon,
 } = require("../controllers/userController.js");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware.js");
 
@@ -41,6 +42,7 @@ router.get("/wishlist", authMiddleware, getWishlist);
 router.put("/save-address", authMiddleware, saveAddress);
 router.post("/add-to-cart", authMiddleware, userCart);
 router.get("/cart", authMiddleware, getUserCart);
+router.post("/cart/apply-coupon", authMiddleware, applyCoupon);
 
 router.get("/:id", authMiddleware, isAdmin, getASingleUser);
 router.put("/block-user/:id", authMiddleware, isAdmin, blockUser);
