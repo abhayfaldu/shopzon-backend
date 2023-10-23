@@ -6,7 +6,8 @@ const {
 	deleteBrand,
 	getASingleBrand,
 } = require("../controllers/brandController");
-const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
+const { authMiddleware } = require("../middlewares/authMiddleware");
+const { isAdmin } = require("../middlewares/isAdmin.js");
 const router = express.Router();
 
 router.get("/", getAllBrands);

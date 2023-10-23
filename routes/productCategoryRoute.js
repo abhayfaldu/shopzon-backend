@@ -6,7 +6,8 @@ const {
 	deleteCategory,
 	getASingleCategory,
 } = require("../controllers/productCategoryController");
-const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
+const { authMiddleware } = require("../middlewares/authMiddleware");
+const { isAdmin } = require("../middlewares/isAdmin.js");
 const router = express.Router();
 
 router.get("/", getAllCategories);

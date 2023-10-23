@@ -3,12 +3,14 @@ const Coupon = require("../models/couponModel.js");
 const User = require("../models/userModel.js");
 const Product = require("../models/productModel.js");
 const Cart = require("../models/cartModel.js");
+const Order = require("../models/orderModel.js");
 const asyncHandler = require("express-async-handler");
 const validateMongodbId = require("../utils/validateMongodbId.js");
 const { generateRefreshToken } = require("../config/refreshToken.js");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("./emailController.js");
 const crypto = require("crypto");
+const { v4: uuid } = require("uuid");
 
 // user register controller
 const createUser = asyncHandler(async (req, res) => {
@@ -438,6 +440,55 @@ const applyCoupon = asyncHandler(async (req, res) => {
 	res.json(totalAfterDiscount);
 });
 
+// create order
+const createOrder = asyncHandler(async (req, res) => {
+	const { COD, couponApplied } = req.body;
+
+	const { _id } = req.user;
+	validateMongodbId(_id);
+
+	try {
+		if (!COD) throw new Error("Create cash order failed");
+
+		const user = await User.findById(_id);
+		const userCart = await Cart.findOne({ orderedBy: _id });
+
+		let finalAmount = 0;
+		finalAmount =
+			couponApplied && userCart.totalAfterDiscount
+				? userCart.totalAfterDiscount
+				: (finalAmount = userCart.cartTotal);
+
+		let newOrder = await new Order({
+			products: userCart.products,
+			paymentIntent: {
+				id: uuid(),
+				method: "COD",
+				amount: finalAmount,
+				status: "Cash on Delivery",
+				created: Date.now(),
+				currency: "usd",
+			},
+			orderedBy: user._id,
+			orderStatus: "Cash on Delivery",
+		}).save();
+
+		let update = userCart.products.map((item) => {
+			return {
+				updateOne: {
+					filter: { _id: item.product._id },
+					update: { $inc: { quantity: -item.count, sold: +item.count } },
+				},
+			};
+		});
+
+		const updated = await Product.bulkWrite(update, {});
+		res.json({ message: "success" });
+	} catch (error) {
+		throw new Error(error);
+	}
+});
+
 module.exports = {
 	createUser,
 	loginUserController,
@@ -459,4 +510,5 @@ module.exports = {
 	getUserCart,
 	emptyCart,
 	applyCoupon,
+	createOrder,
 };
