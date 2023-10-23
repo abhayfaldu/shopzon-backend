@@ -21,6 +21,7 @@ const {
 	emptyCart,
 	applyCoupon,
 	createOrder,
+	getOrders,
 } = require("../controllers/userController.js");
 const { authMiddleware } = require("../middlewares/authMiddleware.js");
 const { isAdmin } = require("../middlewares/isAdmin.js");
@@ -46,6 +47,7 @@ router.post("/add-to-cart", authMiddleware, userCart);
 router.get("/cart", authMiddleware, getUserCart);
 router.post("/cart/apply-coupon", authMiddleware, applyCoupon);
 router.post("/cart/cash-order", authMiddleware, createOrder);
+router.get("/orders", authMiddleware, getOrders);
 
 router.get("/:id", authMiddleware, isAdmin, getASingleUser);
 router.put("/block-user/:id", authMiddleware, isAdmin, blockUser);

@@ -489,6 +489,20 @@ const createOrder = asyncHandler(async (req, res) => {
 	}
 });
 
+// get orders
+const getOrders = asyncHandler(async (req, res) => {
+	const { _id } = req.user;
+	validateMongodbId(_id);
+	try {
+		const orders = await Order.findOne({ orderedBy: _id })
+			.populate("products.product")
+			.exec();
+		res.json(orders);
+	} catch (error) {
+		throw new Error(error);
+	}
+});
+
 module.exports = {
 	createUser,
 	loginUserController,
@@ -511,4 +525,5 @@ module.exports = {
 	emptyCart,
 	applyCoupon,
 	createOrder,
+	getOrders,
 };
