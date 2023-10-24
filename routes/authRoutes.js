@@ -22,6 +22,7 @@ const {
 	applyCoupon,
 	createOrder,
 	getOrders,
+	updateOrderStatus,
 } = require("../controllers/userController.js");
 const { authMiddleware } = require("../middlewares/authMiddleware.js");
 const { isAdmin } = require("../middlewares/isAdmin.js");
@@ -52,5 +53,6 @@ router.get("/orders", authMiddleware, getOrders);
 router.get("/:id", authMiddleware, isAdmin, getASingleUser);
 router.put("/block-user/:id", authMiddleware, isAdmin, blockUser);
 router.put("/unblock-user/:id", authMiddleware, isAdmin, unblockUser);
+router.put("/order/update-order/:id", authMiddleware, isAdmin, updateOrderStatus);
 
 module.exports = router;

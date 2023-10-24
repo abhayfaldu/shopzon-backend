@@ -503,6 +503,27 @@ const getOrders = asyncHandler(async (req, res) => {
 	}
 });
 
+// update order status
+const updateOrderStatus = asyncHandler(async (req, res) => {
+	const { status } = req.body;
+	const { id } = req.params;
+	validateMongodbId(id);
+
+	try {
+		const updatedOrderStatus = await Order.findByIdAndUpdate(
+			id,
+			{
+				orderStatus: status,
+				paymentIntent: { status: status },
+			},
+			{ new: true }
+		);
+		res.json(updatedOrderStatus);
+	} catch (error) {
+		throw new Error(error);
+	}
+});
+
 module.exports = {
 	createUser,
 	loginUserController,
@@ -526,4 +547,5 @@ module.exports = {
 	applyCoupon,
 	createOrder,
 	getOrders,
+	updateOrderStatus,
 };
