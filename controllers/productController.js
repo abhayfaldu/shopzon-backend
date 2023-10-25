@@ -70,7 +70,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
 // get a single product
 const getASingleProduct = asyncHandler(async (req, res) => {
 	const { id } = req.params;
-	validateMongodbId(id)
+	validateMongodbId(id);
 
 	try {
 		const findProduct = await Product.findById(id);
@@ -83,7 +83,7 @@ const getASingleProduct = asyncHandler(async (req, res) => {
 // update product
 const updateProduct = asyncHandler(async (req, res) => {
 	const { id } = req.params;
-	validateMongodbId(id)
+	validateMongodbId(id);
 
 	console.log(req.body);
 	try {
@@ -102,7 +102,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 // delete product
 const deleteProduct = asyncHandler(async (req, res) => {
 	const { id } = req.params;
-	validateMongodbId(id)
+	validateMongodbId(id);
 
 	try {
 		const deleteProduct = await Product.findByIdAndDelete(id);
@@ -115,7 +115,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // add to wishlist
 const addToWishlist = asyncHandler(async (req, res) => {
 	const { _id } = req.user;
-	validateMongodbId(_id)
+	validateMongodbId(_id);
 
 	const { productId } = req.body;
 
@@ -151,7 +151,7 @@ const addToWishlist = asyncHandler(async (req, res) => {
 // ratings
 const rating = asyncHandler(async (req, res) => {
 	const { _id } = req.user;
-	validateMongodbId(_id)
+	validateMongodbId(_id);
 
 	const { star, comment, productId } = req.body;
 
@@ -209,26 +209,19 @@ const rating = asyncHandler(async (req, res) => {
 
 // upload images
 const uploadImages = asyncHandler(async (req, res) => {
-	const { id } = req.params;
-	validateMongoDbId(id);
-
 	try {
 		const uploader = (path) => cloudinaryUploadImg(path, "images");
 		const urls = [];
 		const files = req.files;
 
 		for (const file of files) {
-			const { path } = file;
-			const newPath = await uploader(path);
+			const newPath = await uploader(file.path);
 			urls.push(newPath);
 			fs.unlinkSync(path);
 		}
-		const updatedProduct = await Product.findByIdAndUpdate(
-			id,
-			{ images: urls.map((file) => file) },
-			{ new: true }
-		);
-		res.json(updatedProduct);
+
+		const images = urls.map((file) => file);
+		res.json(images);
 	} catch (error) {
 		throw new Error(error);
 	}
