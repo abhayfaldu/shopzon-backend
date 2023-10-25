@@ -25,7 +25,7 @@ router.put("/wishlist", authMiddleware, addToWishlist);
 
 router.post("/", authMiddleware, isAdmin, createProduct);
 router.put(
-	"/upload/:id",
+	"/upload",
 	authMiddleware,
 	isAdmin,
 	uploadImage.array("images", 10),
