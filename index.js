@@ -12,6 +12,7 @@ const blogCategoryRouter = require("./routes/blogCategoryRoute.js");
 const brandRouter = require("./routes/brandRoute.js");
 const colorRouter = require("./routes/colorRoute.js");
 const couponRouter = require("./routes/couponRoute.js");
+const enquiryRouter = require("./routes/enquiryRoute.js");
 const morgan = require("morgan");
 
 const app = express();
@@ -31,6 +32,7 @@ app.use("/api/blog-category", blogCategoryRouter);
 app.use("/api/brand", brandRouter);
 app.use("/api/coupon", couponRouter);
 app.use("/api/color", colorRouter);
+app.use("/api/enquiry", enquiryRouter);
 
 app.use(notFound);
 app.use(errorHandler);
