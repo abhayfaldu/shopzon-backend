@@ -24,6 +24,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.get("/ping", (req, res) => {
+	res.json({
+		code: 'success',
+		message: 'the server is working'
+	})
+})
+
 app.use("/api/user", authRoute);
 app.use("/api/product", productRouter);
 app.use("/api/blog", blogRouter);
